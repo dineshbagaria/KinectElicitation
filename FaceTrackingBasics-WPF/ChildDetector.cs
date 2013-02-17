@@ -30,10 +30,13 @@ namespace FaceTrackingBasics
         public Boolean ChildOrNot(Skeleton skeleton)
         {
             double height = Height(skeleton);
-            if (height>1.3)
-                return true;
-            else
-                return false;
+            if (height>0.3)
+                if (height>1.3)
+                    return false;
+                else
+                    return true;
+            return false;
+               
         }
        
         public double Height(Skeleton skeleton)
@@ -57,12 +60,15 @@ namespace FaceTrackingBasics
             // Find which leg is tracked more accurately.
             int legLeftTrackedJoints = NumberOfTrackedJoints(hipLeft, kneeLeft, ankleLeft, footLeft);
             int legRightTrackedJoints = NumberOfTrackedJoints(hipRight, kneeRight, ankleRight, footRight);
-
+            int uperBodyTrackedJoints = NumberOfTrackedJoints(head, neck, spine, waist);
 
             double legLength = legLeftTrackedJoints > legRightTrackedJoints ? Length(hipLeft, kneeLeft, ankleLeft, footLeft) : Length(hipRight, kneeRight, ankleRight, footRight);
 
-
-            return Length(head, neck, spine, waist) + legLength + HEAD_DIVERGENCE;
+            if (uperBodyTrackedJoints ==4)
+            {
+                return Length(head, neck, spine, waist) + legLength + HEAD_DIVERGENCE;
+            }
+            return 0;
         }
 
         public int NumberOfTrackedJoints(params Joint[] joints)

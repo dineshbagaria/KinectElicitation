@@ -56,6 +56,7 @@ namespace FaceTrackingBasics
                 oldSensor.DepthStream.Range = DepthRange.Default;
                 oldSensor.SkeletonStream.Disable();
                 oldSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                newSensor.SkeletonStream.AppChoosesSkeletons = false;
                 oldSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
             }
 
@@ -70,14 +71,16 @@ namespace FaceTrackingBasics
                         // This will throw on non Kinect For Windows devices.
                         newSensor.DepthStream.Range = DepthRange.Near;
                         newSensor.SkeletonStream.EnableTrackingInNearRange = true;
+                        newSensor.SkeletonStream.AppChoosesSkeletons = true;
                     }
                     catch (InvalidOperationException)
                     {
                         newSensor.DepthStream.Range = DepthRange.Default;
                         newSensor.SkeletonStream.EnableTrackingInNearRange = false;
+                        newSensor.SkeletonStream.AppChoosesSkeletons = false;
                     }
 
-                    newSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+                  //  newSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
                     newSensor.SkeletonStream.Enable();
                     newSensor.AllFramesReady += KinectSensorOnAllFramesReady;
                 }

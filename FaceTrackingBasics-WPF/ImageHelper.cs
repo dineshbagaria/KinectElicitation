@@ -34,7 +34,7 @@ namespace Kinect.Tool
             DepthImagePoint shoulderLPoint = depthFrame.MapFromSkeletonPoint(shoulderLeft.Position);
             DepthImagePoint shoulderRPoint = depthFrame.MapFromSkeletonPoint(shoulderRight.Position);
             
-            int leftX = shoulderLPoint.X, rightX = shoulderRPoint.Y;
+            int leftX = shoulderLPoint.X, rightX = shoulderRPoint.X;
             int width = rightX - leftX;
             if (width < 254)
             {

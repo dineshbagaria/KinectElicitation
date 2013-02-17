@@ -24,24 +24,25 @@ namespace FaceTrackingBasics
     public partial class FaceTrackingViewer : UserControl, IDisposable
     {
         public static readonly DependencyProperty KinectProperty = DependencyProperty.Register(
-            "Kinect", 
-            typeof(KinectSensor), 
-            typeof(FaceTrackingViewer), 
+            "Kinect",
+            typeof(KinectSensor),
+            typeof(FaceTrackingViewer),
             new PropertyMetadata(
                 null, (o, args) => ((FaceTrackingViewer)o).OnSensorChanged((KinectSensor)args.OldValue, (KinectSensor)args.NewValue)));
 
         private const uint MaxMissedFrames = 100;
+        Boolean SkeletonChooseingState = false;
 
         private readonly Dictionary<int, SkeletonFaceTracker> trackedSkeletons = new Dictionary<int, SkeletonFaceTracker>();
 
         public static Dictionary<int, UserProfile> userProfiles = new Dictionary<int, UserProfile>();
         public DateTime startTime = new DateTime();
         public DateTime currentTime = new DateTime();
-
+        public Dictionary<int, Boolean> userTrackStatus = new Dictionary<int, Boolean>();
 
         ChildDetector childDetector = new ChildDetector();
         GenderDetector genderDetector = GenderDetector.getGenderDetector();
-        
+
         private byte[] colorImage;
 
         private ColorImageFormat colorImageFormat = ColorImageFormat.Undefined;
@@ -53,14 +54,14 @@ namespace FaceTrackingBasics
         private bool disposed;
 
         private Skeleton[] skeletonData;
-        public static float totalDistractiony= 0;
+        public static float totalDistractiony = 0;
         public static float rotationOldy = 0;
         /*public static float totalDistractionx = 0;
         public float rotationOldx = 0;
         public static float totalDistractionz = 0;
         public float rotationOldz = 0;*/
 
-     
+
 
         public FaceTrackingViewer()
         {
@@ -110,8 +111,22 @@ namespace FaceTrackingBasics
             foreach (SkeletonFaceTracker faceInformation in this.trackedSkeletons.Values)
             {
                 faceInformation.DrawFaceModel(drawingContext);
-              
+
             }
+        }
+
+        private Skeleton getSkeletonForID(int userID, Skeleton[] skeletonData)
+        {
+
+            foreach (Skeleton skeleton in this.skeletonData)
+            {
+                if (skeleton.TrackingId == userID)
+                {
+                    return skeleton;
+
+                }
+            }
+            return null;
         }
 
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
@@ -119,7 +134,7 @@ namespace FaceTrackingBasics
             ColorImageFrame colorImageFrame = null;
             DepthImageFrame depthImageFrame = null;
             SkeletonFrame skeletonFrame = null;
-            
+
             try
             {
                 colorImageFrame = allFramesReadyEventArgs.OpenColorImageFrame();
@@ -157,7 +172,7 @@ namespace FaceTrackingBasics
                 {
                     this.colorImage = new byte[colorImageFrame.PixelDataLength];
                 }
-                
+
                 // Get the skeleton information
                 if (this.skeletonData == null || this.skeletonData.Length != skeletonFrame.SkeletonArrayLength)
                 {
@@ -167,74 +182,133 @@ namespace FaceTrackingBasics
                 colorImageFrame.CopyPixelDataTo(this.colorImage);
                 depthImageFrame.CopyPixelDataTo(this.depthImage);
                 skeletonFrame.CopySkeletonDataTo(this.skeletonData);
+                if (!this.Kinect.SkeletonStream.AppChoosesSkeletons)
+                {
+                    //this.Kinect.SkeletonStream.AppChoosesSkeletons = true; // Ensure AppChoosesSkeletons is set
+                }
 
-                // Update the list of trackers and the trackers with the current frame information
+                int count = 0;
                 foreach (Skeleton skeleton in this.skeletonData)
                 {
                     if (skeleton.TrackingState == SkeletonTrackingState.Tracked
-                        || skeleton.TrackingState == SkeletonTrackingState.PositionOnly)
+                       || skeleton.TrackingState == SkeletonTrackingState.PositionOnly)
                     {
-                        // We want keep a record of any skeleton, tracked or untracked.
-                        if (!this.trackedSkeletons.ContainsKey(skeleton.TrackingId))
-                        {
-                            this.trackedSkeletons.Add(skeleton.TrackingId, new SkeletonFaceTracker());
-                                                    
-                        }
+                        count++;
+                    }
+                }
+                if (count>2)
+                {
+                    count++;
+                }
+
+
+
+
+                foreach (Skeleton skeleton in this.skeletonData)
+                {
+                    if (skeleton.TrackingState == SkeletonTrackingState.Tracked
+                       || skeleton.TrackingState == SkeletonTrackingState.PositionOnly)
+                    {
                         if (!userProfiles.ContainsKey(skeleton.TrackingId))
                         {
                             UserProfile user = new UserProfile();
                             userProfiles.Add(skeleton.TrackingId, user);
+                            user.userID = skeleton.TrackingId;
+                            userTrackStatus.Add(skeleton.TrackingId, false);
 
-
-                            //gender detection
-                            
-                            int gender = genderDetector.detectThroughKinect(colorImageFrame, depthImageFrame, skeleton);
-                            if (gender == 0)
-                                user.gender = "Male";
-                            else
-                                user.gender = "Female";
-
-
-                            //child detection
-                           
-                            user.userIsChild = childDetector.ChildOrNot(skeleton);
-                        }
-
-                         
-                        // Give each tracker the upated frame.
-                        SkeletonFaceTracker skeletonFaceTracker;
-                        if (this.trackedSkeletons.TryGetValue(skeleton.TrackingId, out skeletonFaceTracker))
-                        {
-                            skeletonFaceTracker.OnFrameReady(this.Kinect, colorImageFormat, colorImage, depthImageFormat, depthImage, skeleton);
-                            skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
-                            if (skeletonFaceTracker.faceTracked)
-                            {
-                                if (Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy) > 1.5)
-                                {
-                                    totalDistractiony = totalDistractiony + Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy);
-                                    rotationOldy = skeletonFaceTracker.rotationNew;
-                                    skeletonFaceTracker.faceTracked = false;
-                                    //totalDistractiony = skeletonFaceTracker.rotationNew;
-                                }
-                                if (currentTime.Subtract(startTime).Seconds > 300) 
-                                {
-                                    if (userProfiles.ContainsKey(skeleton.TrackingId))
-                                    {
-                                        /*userDistractionStatus.Remove(skeleton.TrackingId);
-                                        userDistractionStatus.Add(skeleton.TrackingId, true);*/
-                                        UserProfile tempUser = new UserProfile();
-                                        userProfiles.TryGetValue(skeleton.TrackingId, out tempUser);
-                                        tempUser.userDistracted = true;
-                                    }
-                                    startTime = currentTime;
-                                }
-
-                            }
-                            
-                            
                         }
                     }
                 }
+
+                foreach (int userID in userProfiles.Keys)
+                {
+                    Skeleton skeleton = getSkeletonForID(userID, skeletonData);
+
+                    Boolean tempBool = userTrackStatus[userID];
+                   // Boolean tempBool = userTrackStatus.TryGetValue(userID, out tempBool);
+
+                    /*if (skeleton.TrackingState != SkeletonTrackingState.Tracked && !tempBool)
+                    {
+                        this.Kinect.SkeletonStream.ChooseSkeletons(userID);
+                        userTrackStatus.Remove(userID);
+                        userTrackStatus.Add(skeleton.TrackingId, true);
+                        break;
+
+                    }
+
+                    userTrackStatus.Remove(userID);
+                    userTrackStatus.Add(skeleton.TrackingId, false);*/
+                    if (skeleton != null)
+                    {
+
+                        if (skeleton.TrackingState == SkeletonTrackingState.Tracked)
+                        {
+
+                            userTrackStatus[skeleton.TrackingId] = true;
+                            Debug.WriteLine("tracked Skeleton Id:" + skeleton.TrackingId);
+                            // We want keep a record of any skeleton, tracked or untracked.
+                            if (!this.trackedSkeletons.ContainsKey(skeleton.TrackingId))
+                            {
+                                this.trackedSkeletons.Add(skeleton.TrackingId, new SkeletonFaceTracker());
+
+                            }
+
+
+                            //gender detection
+                            /*  int gender = genderDetector.detectThroughKinect(colorImageFrame, depthImageFrame, skeleton);
+                              if (gender == 0)
+                                  user.gender = "Male";
+                              else
+                                  user.gender = "Female";*/
+
+                            //child detection
+
+                            /*UserProfile tempUserProfile = new UserProfile();
+                            userProfiles.TryGetValue(skeleton.TrackingId, out tempUserProfile);
+                            tempUserProfile.userIsChild = childDetector.ChildOrNot(skeleton);*/
+
+                            userProfiles[skeleton.TrackingId].userIsChild = childDetector.ChildOrNot(skeleton);
+
+
+
+                            // Give each tracker the upated frame.
+                            SkeletonFaceTracker skeletonFaceTracker;
+                            if (this.trackedSkeletons.TryGetValue(skeleton.TrackingId, out skeletonFaceTracker))
+                            {
+                                skeletonFaceTracker.OnFrameReady(this.Kinect, colorImageFormat, colorImage, depthImageFormat, depthImage, skeleton);
+                                skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
+                                if (skeletonFaceTracker.faceTracked)
+                                {
+                                    if (Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy) > 1.5)
+                                    {
+                                        totalDistractiony = totalDistractiony + Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy);
+                                        rotationOldy = skeletonFaceTracker.rotationNew;
+                                        skeletonFaceTracker.faceTracked = false;
+                                        //totalDistractiony = skeletonFaceTracker.rotationNew;
+                                    }
+                                    if (currentTime.Subtract(startTime).Seconds > 300)
+                                    {
+                                        if (userProfiles.ContainsKey(skeleton.TrackingId))
+                                        {
+                                            /*userDistractionStatus.Remove(skeleton.TrackingId);
+                                            userDistractionStatus.Add(skeleton.TrackingId, true);
+                                            UserProfile tempUser = new UserProfile();
+                                            userProfiles.TryGetValue(skeleton.TrackingId, out tempUser);
+                                            tempUser.userDistracted = true;*/
+
+                                            userProfiles[skeleton.TrackingId].userDistracted = true;
+                                        }
+                                        startTime = currentTime;
+                                    }
+
+                                }
+
+
+                            }
+                        }
+                    }
+                }
+
 
                 this.RemoveOldTrackers(skeletonFrame.FrameNumber);
 
@@ -255,6 +329,57 @@ namespace FaceTrackingBasics
                 if (skeletonFrame != null)
                 {
                     skeletonFrame.Dispose();
+                }
+
+                bool allDone = true;
+                foreach (var userID in userTrackStatus.Keys)
+                {
+                    bool temp = userTrackStatus[userID];
+                  //  userTrackStatus.TryGetValue(userID, out temp);
+                    if (!temp)
+                    {
+                        allDone = false;
+                        break;
+                    }
+                }
+                if (allDone)
+                {
+                    List<int> userIDList = new List<int>(userTrackStatus.Keys);
+
+                    foreach (var userID in userIDList)
+                    {
+                        userTrackStatus[userID] = false;
+                    }
+                    int tempUserID = 0;
+                    foreach (var userID in userTrackStatus.Keys)
+                    {
+                        bool temp = userTrackStatus[userID];
+                        //userTrackStatus.TryGetValue(userID, out temp);
+                        if (!temp)
+                        {
+                            this.Kinect.SkeletonStream.ChooseSkeletons(userID);
+                            tempUserID = userID;
+                            break;
+                        }
+                    }
+                    userTrackStatus[tempUserID] = true;
+                }
+                else
+                {
+                    int tempUserID=0;
+                    foreach (var userID in userTrackStatus.Keys)
+                    {
+                        bool temp = userTrackStatus[userID]; 
+                        //userTrackStatus.TryGetValue(userID, out temp);
+                        if (!temp)
+                        {
+                            this.Kinect.SkeletonStream.ChooseSkeletons(userID);
+                            tempUserID=userID;
+                            break;
+                        }
+                    }
+                    userTrackStatus[tempUserID] = true;
+
                 }
             }
         }
@@ -407,14 +532,14 @@ namespace FaceTrackingBasics
                         colorImageFormat, colorImage, depthImageFormat, depthImage, skeletonOfInterest);
 
                     this.lastFaceTrackSucceeded = frame.TrackSuccessful;
-                    
+
                     if (this.lastFaceTrackSucceeded)
                     {
                         if (faceTriangles == null)
                         {
                             // only need to get this once.  It doesn't change.
                             faceTriangles = frame.GetTriangles();
-                            
+
                             //Debug.WriteLine(rotation.X + "," + rotation.Y + "," + rotation.Z);
 
                         }
