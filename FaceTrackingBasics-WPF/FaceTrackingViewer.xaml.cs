@@ -14,6 +14,7 @@ namespace FaceTrackingBasics
     using System.Windows.Media;
     using Microsoft.Kinect;
     using Microsoft.Kinect.Toolkit.FaceTracking;
+    using Detector;
 
     using Point = System.Windows.Point;
 
@@ -154,6 +155,7 @@ namespace FaceTrackingBasics
         }
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
         {
+            sessionEndTime = DateTime.Now;
             if (sessionEndTime.Subtract(sessionStartTime).Seconds > 120)
             {
                 //publish data for the session
@@ -170,10 +172,11 @@ namespace FaceTrackingBasics
             else
             {
                 //assign current data to the session
+                List<UserProfile> sessionUsers;
                 if (session == null)
                 {
                     contentCounter++;
-                    List<UserProfile> sessionUsers = new List<UserProfile>();
+                    sessionUsers = new List<UserProfile>();
                     foreach (var item in userProfiles.Values)
                     {
                         sessionUsers.Add(item);
@@ -181,9 +184,15 @@ namespace FaceTrackingBasics
                     session = new ElicitationSession(sessionUsers, contentCounter);
 
                 }
+                sessionUsers = new List<UserProfile>();
+                foreach (var item in userProfiles.Values)
+                {
+                    sessionUsers.Add(item);
+                }
+                session.setUsers(sessionUsers);
             }
 
-            sessionEndTime = new DateTime();
+
 
             ColorImageFrame colorImageFrame = null;
             DepthImageFrame depthImageFrame = null;
@@ -312,11 +321,14 @@ namespace FaceTrackingBasics
 
 
                             //gender detection
-                            /*  int gender = genderDetector.detectThroughKinect(colorImageFrame, depthImageFrame, skeleton);
-                              if (gender == 0)
-                                  user.gender = "Male";
-                              else
-                                  user.gender = "Female";*/
+                            int gender = genderDetector.detectThroughKinect(Kinect, colorImageFrame, skeleton);
+                            UserProfile user = userProfiles[skeleton.TrackingId];
+                            if (gender == 0)
+                                user.gender = "Male";
+                            else if (gender == 1)
+                                user.gender = "Female";
+                            else
+                                user.gender = "Unknown";
 
                             //child detection
 

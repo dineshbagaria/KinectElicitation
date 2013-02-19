@@ -37,6 +37,10 @@ namespace FaceTrackingBasics
         {
             sessionUsers.AddRange(userList);
         }
+        public void setUsers(List<UserProfile> userList)
+        {
+            sessionUsers = userList;
+        }
 
 
     }

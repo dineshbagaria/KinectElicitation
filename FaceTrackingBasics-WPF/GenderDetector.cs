@@ -11,7 +11,7 @@ using Emgu.CV.Structure;
 using Kinect.Tool;
 using Microsoft.Kinect;
 
-namespace Kinect_Demo1
+namespace Detector
 {
     class GenderDetector
     {
