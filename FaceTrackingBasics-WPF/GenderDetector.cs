@@ -11,7 +11,7 @@ using Emgu.CV.Structure;
 using Kinect.Tool;
 using Microsoft.Kinect;
 
-namespace FaceTrackingBasics
+namespace Kinect_Demo1
 {
     class GenderDetector
     {
@@ -42,14 +42,16 @@ namespace FaceTrackingBasics
 
         public int detect(Image<Gray, byte> img)
         {
+            if (img == null) return -1;
+
             if (img.Height != 225 || img.Width != 224)
                 img = img.Resize(224, 225, Emgu.CV.CvEnum.INTER.CV_INTER_CUBIC);
             return model.Predict(img).Label;
         }
 
-        public int detectThroughKinect(ColorImageFrame colorFrame, DepthImageFrame depthFrame, Skeleton skeleton)
+        public int detectThroughKinect(KinectSensor sensor, ColorImageFrame colorFrame, Skeleton skeleton)
         {
-            Image<Gray, byte> image = ImageHelper.extractImageByHeadShoulder(colorFrame, depthFrame, skeleton);
+            Image<Gray, byte> image = ImageHelper.cropImage(sensor, colorFrame, skeleton);
             int ret = this.detect(image);
             return ret;
         }
