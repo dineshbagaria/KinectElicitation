@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="ChildDetector.cs" />
     <Compile Include="Content.cs" />
+    <Compile Include="CsvExport.cs" />
     <Compile Include="ElicitationSession.cs" />
     <Compile Include="GenderDetector.cs" />
     <Compile Include="ImageHelper.cs" />

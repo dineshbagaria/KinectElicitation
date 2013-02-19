@@ -24,7 +24,7 @@ namespace FaceTrackingBasics
         private WriteableBitmap colorImageWritableBitmap;
         private byte[] colorImageData;
         private ColorImageFormat currentColorImageFormat = ColorImageFormat.Undefined;
-        private ElicitationSession session;
+       
         
 
 
@@ -40,7 +40,8 @@ namespace FaceTrackingBasics
 
             sensorChooser.Start();
             Content content = new Content(ContentType.Movie, Genre.Action,120,"Top Gun","Tom Cruise", "Journey of a Figher Pilot");
-            session = new ElicitationSession(content);
+            
+            //
         }
 
         private void SensorChooserOnKinectChanged(object sender, KinectChangedEventArgs kinectChangedEventArgs)
@@ -107,26 +108,26 @@ namespace FaceTrackingBasics
 
         private void KinectSensorOnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
         {
-          /*  foreach (var userDistractionStatus in FaceTrackingViewer.userDistractionStatus  )
-            {
-                bool userFoundInSession = false;
-                foreach (var sessionUser in session.sessionUsers)
-                {
-                    if (userDistractionStatus.Key == sessionUser.userID)
-                    {
-                        sessionUser.userDistracted = userDistractionStatus.Value;
-                        userFoundInSession = true;
-                        continue;
-                    }
-                }
-                if (!userFoundInSession)
-                {
-                    UserProfile user = new UserProfile(userDistractionStatus.Key, "Male", true, true, userDistractionStatus.Value);
-                    session.AddUser(user);
-                }
-            }*/
-            yaw.Text = "Distraction  " + FaceTrackingViewer.totalDistractiony;
-            yaw2.Text = "Distraction  " + FaceTrackingViewer.rotationOldy;
+            /*  foreach (var userDistractionStatus in FaceTrackingViewer.userDistractionStatus  )
+              {
+                  bool userFoundInSession = false;
+                  foreach (var sessionUser in session.sessionUsers)
+                  {
+                      if (userDistractionStatus.Key == sessionUser.userID)
+                      {
+                          sessionUser.userDistracted = userDistractionStatus.Value;
+                          userFoundInSession = true;
+                          continue;
+                      }
+                  }
+                  if (!userFoundInSession)
+                  {
+                      UserProfile user = new UserProfile(userDistractionStatus.Key, "Male", true, true, userDistractionStatus.Value);
+                      session.AddUser(user);
+                  }
+              }
+              yaw.Text = "Distraction  " + FaceTrackingViewer.totalDistractiony;
+              yaw2.Text = "Distraction  " + FaceTrackingViewer.rotationOldy;*/
             using (var colorImageFrame = allFramesReadyEventArgs.OpenColorImageFrame())
             {
                 if (colorImageFrame == null)

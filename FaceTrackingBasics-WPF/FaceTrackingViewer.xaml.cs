@@ -54,8 +54,14 @@ namespace FaceTrackingBasics
         private bool disposed;
 
         private Skeleton[] skeletonData;
-        public static float totalDistractiony = 0;
-        public static float rotationOldy = 0;
+        public static Dictionary<int, float> totalDistractiony;
+        public static Dictionary<int, float> rotationOldy;
+        public static Dictionary<int, List<float>> headSDDataset;
+        public static Dictionary<int, Double> headSD;
+        DateTime sessionStartTime = new DateTime(), sessionEndTime = new DateTime();
+        private ElicitationSession session;
+        public int contentCounter;
+
         /*public static float totalDistractionx = 0;
         public float rotationOldx = 0;
         public static float totalDistractionz = 0;
@@ -129,8 +135,56 @@ namespace FaceTrackingBasics
             return null;
         }
 
+        private Double CalculateSD(List<float> data)
+        {
+            float mean = 0;
+            double squaredMean = 0;
+            foreach (float item in data)
+            {
+                mean += item;
+            }
+            mean /= data.Count;
+
+            foreach (float item in data)
+            {
+                squaredMean += Math.Pow(System.Convert.ToDouble(mean - item), 2);
+            }
+
+            return Math.Pow(squaredMean / data.Count, 0.5);
+        }
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
         {
+            if (sessionEndTime.Subtract(sessionStartTime).Seconds > 120)
+            {
+                //publish data for the session
+                //clear old variables
+                userProfiles = null;
+                userTrackStatus = null;
+                userTrackStatus = new Dictionary<int, Boolean>();
+                userProfiles = new Dictionary<int, UserProfile>();
+                //start new session
+                session = null;
+                sessionStartTime = sessionEndTime;
+
+            }
+            else
+            {
+                //assign current data to the session
+                if (session == null)
+                {
+                    contentCounter++;
+                    List<UserProfile> sessionUsers = new List<UserProfile>();
+                    foreach (var item in userProfiles.Values)
+                    {
+                        sessionUsers.Add(item);
+                    }
+                    session = new ElicitationSession(sessionUsers, contentCounter);
+
+                }
+            }
+
+            sessionEndTime = new DateTime();
+
             ColorImageFrame colorImageFrame = null;
             DepthImageFrame depthImageFrame = null;
             SkeletonFrame skeletonFrame = null;
@@ -187,19 +241,19 @@ namespace FaceTrackingBasics
                     //this.Kinect.SkeletonStream.AppChoosesSkeletons = true; // Ensure AppChoosesSkeletons is set
                 }
 
-                int count = 0;
-                foreach (Skeleton skeleton in this.skeletonData)
-                {
-                    if (skeleton.TrackingState == SkeletonTrackingState.Tracked
-                       || skeleton.TrackingState == SkeletonTrackingState.PositionOnly)
-                    {
-                        count++;
-                    }
-                }
-                if (count>2)
-                {
-                    count++;
-                }
+                //int count = 0;
+                //foreach (Skeleton skeleton in this.skeletonData)
+                //{
+                //    if (skeleton.TrackingState == SkeletonTrackingState.Tracked
+                //       || skeleton.TrackingState == SkeletonTrackingState.PositionOnly)
+                //    {
+                //        count++;
+                //    }
+                //}
+                //if (count > 2)
+                //{
+                //    count++;
+                //}
 
 
 
@@ -215,7 +269,10 @@ namespace FaceTrackingBasics
                             userProfiles.Add(skeleton.TrackingId, user);
                             user.userID = skeleton.TrackingId;
                             userTrackStatus.Add(skeleton.TrackingId, false);
-
+                            totalDistractiony.Add(skeleton.TrackingId, 0);
+                            rotationOldy.Add(skeleton.TrackingId, 0);
+                            headSD.Add(skeleton.TrackingId, 0);
+                            headSDDataset.Add(skeleton.TrackingId, new List<float>());
                         }
                     }
                 }
@@ -225,7 +282,7 @@ namespace FaceTrackingBasics
                     Skeleton skeleton = getSkeletonForID(userID, skeletonData);
 
                     Boolean tempBool = userTrackStatus[userID];
-                   // Boolean tempBool = userTrackStatus.TryGetValue(userID, out tempBool);
+                    // Boolean tempBool = userTrackStatus.TryGetValue(userID, out tempBool);
 
                     /*if (skeleton.TrackingState != SkeletonTrackingState.Tracked && !tempBool)
                     {
@@ -279,16 +336,23 @@ namespace FaceTrackingBasics
                                 skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
                                 if (skeletonFaceTracker.faceTracked)
                                 {
-                                    if (Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy) > 1.5)
+                                    if (Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy[skeleton.TrackingId]) > 1.5)
                                     {
-                                        totalDistractiony = totalDistractiony + Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy);
-                                        rotationOldy = skeletonFaceTracker.rotationNew;
+                                        /* totalDistractiony[skeleton.TrackingId] = totalDistractiony[skeleton.TrackingId] + Math.Abs(skeletonFaceTracker.rotationNew - rotationOldy[skeleton.TrackingId]);
+                                         rotationOldy[skeleton.TrackingId] = skeletonFaceTracker.rotationNew;
+                                         skeletonFaceTracker.faceTracked = false;*/
+                                        //totalDistractiony = skeletonFaceTracker.rotationNew;                                      
+
+                                        headSDDataset[skeleton.TrackingId].Add(Math.Abs(skeletonFaceTracker.rotationNew
+                                            - rotationOldy[skeleton.TrackingId]));
+                                        headSD[skeleton.TrackingId] = CalculateSD(headSDDataset[skeleton.TrackingId]);
+                                        rotationOldy[skeleton.TrackingId] = skeletonFaceTracker.rotationNew;
                                         skeletonFaceTracker.faceTracked = false;
-                                        //totalDistractiony = skeletonFaceTracker.rotationNew;
+
                                     }
-                                    if (currentTime.Subtract(startTime).Seconds > 300)
+                                    if (currentTime.Subtract(startTime).Seconds > 120)
                                     {
-                                        if (userProfiles.ContainsKey(skeleton.TrackingId))
+                                        if (userProfiles.ContainsKey(skeleton.TrackingId) && headSD[skeleton.TrackingId] > 10)
                                         {
                                             /*userDistractionStatus.Remove(skeleton.TrackingId);
                                             userDistractionStatus.Add(skeleton.TrackingId, true);
@@ -335,7 +399,7 @@ namespace FaceTrackingBasics
                 foreach (var userID in userTrackStatus.Keys)
                 {
                     bool temp = userTrackStatus[userID];
-                  //  userTrackStatus.TryGetValue(userID, out temp);
+                    //  userTrackStatus.TryGetValue(userID, out temp);
                     if (!temp)
                     {
                         allDone = false;
@@ -366,15 +430,15 @@ namespace FaceTrackingBasics
                 }
                 else
                 {
-                    int tempUserID=0;
+                    int tempUserID = 0;
                     foreach (var userID in userTrackStatus.Keys)
                     {
-                        bool temp = userTrackStatus[userID]; 
+                        bool temp = userTrackStatus[userID];
                         //userTrackStatus.TryGetValue(userID, out temp);
                         if (!temp)
                         {
                             this.Kinect.SkeletonStream.ChooseSkeletons(userID);
-                            tempUserID=userID;
+                            tempUserID = userID;
                             break;
                         }
                     }

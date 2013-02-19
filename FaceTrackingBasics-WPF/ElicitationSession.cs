@@ -23,6 +23,11 @@ namespace FaceTrackingBasics
             sessionUsers = new List<UserProfile>();
         }
 
+        public ElicitationSession(List<UserProfile> userProfiles, int contentCounter)
+        {
+            sessionID = contentCounter.ToString();
+            sessionUsers = new List<UserProfile>();
+        }
 
         public void AddUser(UserProfile user)
         {
