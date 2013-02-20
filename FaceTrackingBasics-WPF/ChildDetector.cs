@@ -18,14 +18,14 @@ namespace FaceTrackingBasics
     class ChildDetector
     {
         public int mycount = 0;
-        public float A, B, C, D, F, G, H, I, P, Q, R, S, T, U, V, W, AA, BB, a, b, c, d, f, g, h, i, p, q, r, s, t, u, v, w, aa, bb, a1, b1, c1, d1, f1, g1, h1, i1, p1, q1, r1, s1, t1, u1, v1, w1, aa1, bb1;
+        //public float A, B, C, D, F, G, H, I, P, Q, R, S, T, U, V, W, AA, BB, a, b, c, d, f, g, h, i, p, q, r, s, t, u, v, w, aa, bb, a1, b1, c1, d1, f1, g1, h1, i1, p1, q1, r1, s1, t1, u1, v1, w1, aa1, bb1;
         public bool x = false;
-        private KinectSensor _Kinect;
-        private readonly Brush[] _SkeletonBrushes;
-        private Skeleton[] _FrameSkeletons;
-        double startXAngle = 999, currentXAngle = 0, deviation = 0;
+       // private KinectSensor _Kinect;
+        //private readonly Brush[] _SkeletonBrushes;
+        //private Skeleton[] _FrameSkeletons;
+        //double startXAngle = 999, currentXAngle = 0, deviation = 0;
 
-        DateTime startTime;
+       // DateTime startTime;
 
         public Boolean ChildOrNot(Skeleton skeleton)
         {

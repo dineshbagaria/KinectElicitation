@@ -114,6 +114,8 @@
     <Compile Include="ElicitationSession.cs" />
     <Compile Include="GenderDetector.cs" />
     <Compile Include="ImageHelper.cs" />
+    <Compile Include="ResultCreator.cs" />
+    <Compile Include="SkeletonPositon.cs" />
     <Compile Include="UserProfile.cs" />
     <Compile Include="FaceTrackingViewer.xaml.cs">
       <DependentUpon>FaceTrackingViewer.xaml</DependentUpon>

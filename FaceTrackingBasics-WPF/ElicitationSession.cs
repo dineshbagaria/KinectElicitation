@@ -10,6 +10,8 @@ namespace FaceTrackingBasics
         public String sessionID { set; get; }
         public List<UserProfile> sessionUsers { set; get; }
         public Content content { set; get; }
+        public DateTime startTime { set; get; }
+        public DateTime endTime { set; get; }
 
         public ElicitationSession(Content show) 
         {
@@ -25,7 +27,7 @@ namespace FaceTrackingBasics
 
         public ElicitationSession(List<UserProfile> userProfiles, int contentCounter)
         {
-            sessionID = contentCounter.ToString();
+            sessionID = DateTime.Now.ToString();
             sessionUsers = new List<UserProfile>();
         }
 

@@ -32,7 +32,7 @@ namespace FaceTrackingBasics
                 null, (o, args) => ((FaceTrackingViewer)o).OnSensorChanged((KinectSensor)args.OldValue, (KinectSensor)args.NewValue)));
 
         private const uint MaxMissedFrames = 100;
-        Boolean SkeletonChooseingState = false;
+        //Boolean SkeletonChooseingState = false;
 
         private readonly Dictionary<int, SkeletonFaceTracker> trackedSkeletons = new Dictionary<int, SkeletonFaceTracker>();
 
@@ -40,10 +40,15 @@ namespace FaceTrackingBasics
         public DateTime startTime = new DateTime();
         public DateTime currentTime = new DateTime();
         public Dictionary<int, Boolean> userTrackStatus = new Dictionary<int, Boolean>();
+        int nameCounter;
 
         ChildDetector childDetector = new ChildDetector();
         GenderDetector genderDetector = GenderDetector.getGenderDetector();
 
+        public static Dictionary<int, SkeletonPosition> skeletonPositions = new Dictionary<int, SkeletonPosition>();
+
+        ResultCreator dynamicRC = new ResultCreator();
+        ResultCreator staticRC = new ResultCreator();
         private byte[] colorImage;
 
         private ColorImageFormat colorImageFormat = ColorImageFormat.Undefined;
@@ -55,11 +60,11 @@ namespace FaceTrackingBasics
         private bool disposed;
 
         private Skeleton[] skeletonData;
-        public static Dictionary<int, float> totalDistractiony;
-        public static Dictionary<int, float> rotationOldy;
-        public static Dictionary<int, List<float>> headSDDataset;
-        public static Dictionary<int, Double> headSD;
-        DateTime sessionStartTime = new DateTime(), sessionEndTime = new DateTime();
+        public static Dictionary<int, float> totalDistractiony = new Dictionary<int, float>();
+        public static Dictionary<int, float> rotationOldy = new Dictionary<int, float>();
+        public static Dictionary<int, List<float>> headSDDataset = new Dictionary<int, List<float>>();
+        public static Dictionary<int, Double> headSD = new Dictionary<int, double>();
+        DateTime sessionStartTime = DateTime.Now, sessionEndTime = DateTime.Now;
         private ElicitationSession session;
         public int contentCounter;
 
@@ -73,8 +78,8 @@ namespace FaceTrackingBasics
         public FaceTrackingViewer()
         {
             this.InitializeComponent();
-            startTime = DateTime.Today;
-            currentTime = DateTime.Today;
+            startTime = DateTime.Now;
+            currentTime = DateTime.Now;
 
         }
 
@@ -156,14 +161,28 @@ namespace FaceTrackingBasics
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
         {
             sessionEndTime = DateTime.Now;
-            if (sessionEndTime.Subtract(sessionStartTime).Seconds > 120)
+            if (sessionEndTime.Subtract(sessionStartTime).TotalSeconds > 20)
             {
                 //publish data for the session
+                session.startTime = sessionStartTime;
+                session.endTime = sessionEndTime;
+                this.dynamicRC.saveDynamicUserProfiles(session, new List<UserProfile>(userProfiles.Values));
+                this.staticRC.saveStaticUserProfiles(session, new List<UserProfile>(userProfiles.Values));
+                if (contentCounter == 2)
+                {
+                    this.dynamicRC.ExportToFile("DynamicData_" + nameCounter + ".csv");
+                    this.staticRC.ExportToFile("StaticData_" + nameCounter++ + ".csv");
+                    contentCounter = 0;
+                }
                 //clear old variables
                 userProfiles = null;
                 userTrackStatus = null;
+                totalDistractiony = new Dictionary<int, float>();
                 userTrackStatus = new Dictionary<int, Boolean>();
                 userProfiles = new Dictionary<int, UserProfile>();
+                rotationOldy = new Dictionary<int, float>();
+                headSD = new Dictionary<int, double>();
+                headSDDataset = new Dictionary<int, List<float>>();
                 //start new session
                 session = null;
                 sessionStartTime = sessionEndTime;
@@ -319,6 +338,20 @@ namespace FaceTrackingBasics
 
                             }
 
+                            //Sleeper Detection
+
+                            if (!skeletonPositions.ContainsKey(skeleton.TrackingId))
+                            {
+                                skeletonPositions.Add(skeleton.TrackingId, new SkeletonPosition(skeleton, Kinect));
+                            }
+                            else
+                            {
+                                if (skeletonPositions[skeleton.TrackingId].timeElapsed().TotalSeconds > 60)
+                                {
+                                    userProfiles[skeleton.TrackingId].userSleeping = skeletonPositions[skeleton.TrackingId].userSleeping(new SkeletonPosition(skeleton, Kinect));
+                                    skeletonPositions[skeleton.TrackingId] = new SkeletonPosition(skeleton, Kinect);
+                                }
+                            }
 
                             //gender detection
                             int gender = genderDetector.detectThroughKinect(Kinect, colorImageFrame, skeleton);
@@ -362,7 +395,8 @@ namespace FaceTrackingBasics
                                         skeletonFaceTracker.faceTracked = false;
 
                                     }
-                                    if (currentTime.Subtract(startTime).Seconds > 120)
+                                    currentTime = DateTime.Now;
+                                    if (currentTime.Subtract(startTime).TotalSeconds > 60)
                                     {
                                         if (userProfiles.ContainsKey(skeleton.TrackingId) && headSD[skeleton.TrackingId] > 10)
                                         {
