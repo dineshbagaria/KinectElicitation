@@ -40,6 +40,7 @@ namespace FaceTrackingBasics
                 _csvExport["SessionID"] = session.sessionID;
                 _csvExport["Start Time"] = session.startTime;
                 _csvExport["End Time"] = session.endTime;
+                _csvExport["User ID"] = user.userID;
                 _csvExport["Is User Sleeping"] = user.userSleeping;
                 _csvExport["Is User Distracted"] = user.userDistracted;
             }

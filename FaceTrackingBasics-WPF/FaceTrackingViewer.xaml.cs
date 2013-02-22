@@ -46,7 +46,7 @@ namespace FaceTrackingBasics
         ChildDetector childDetector = new ChildDetector();
         GenderDetector genderDetector = GenderDetector.getGenderDetector();
 
-        //public static Dictionary<int, SkeletonPosition> skeletonPositions = new Dictionary<int, SkeletonPosition>();
+        public static Dictionary<int, SkeletonPosition> skeletonPositions = new Dictionary<int, SkeletonPosition>();
 
         ResultCreator dynamicRC = new ResultCreator();
         ResultCreator staticRC = new ResultCreator();
@@ -345,19 +345,34 @@ namespace FaceTrackingBasics
                             }
 
                             ////Sleeper Detection/*
+                
 
-                            //if (!skeletonPositions.ContainsKey(skeleton.TrackingId))
-                            //{
-                            //    skeletonPositions.Add(skeleton.TrackingId, new SkeletonPosition(skeleton, Kinect));
-                            //}
-                            //else
-                            //{
-                            //    if (skeletonPositions[skeleton.TrackingId].timeElapsed().TotalSeconds > 60)
-                            //    {
-                            //        userProfiles[skeleton.TrackingId].userSleeping = skeletonPositions[skeleton.TrackingId].userSleeping(new SkeletonPosition(skeleton, Kinect));
-                            //        skeletonPositions[skeleton.TrackingId] = new SkeletonPosition(skeleton, Kinect);
-                            //    }
-                            //}*/
+                            if (!skeletonPositions.ContainsKey(skeleton.TrackingId))
+                            {
+                                if (skeleton.Joints[JointType.ShoulderLeft].TrackingState == JointTrackingState.Tracked & skeleton.Joints[JointType.ShoulderRight].TrackingState == JointTrackingState.Tracked
+                                    & skeleton.Joints[JointType.Head].TrackingState == JointTrackingState.Tracked & skeleton.Joints[JointType.HandLeft].TrackingState == JointTrackingState.Tracked
+                                    & skeleton.Joints[JointType.HandRight].TrackingState == JointTrackingState.Tracked)
+                                {
+                                    skeletonPositions.Add(skeleton.TrackingId, new SkeletonPosition(skeleton, Kinect));
+                                }
+                            }
+                            else
+                            {
+                                if (skeletonPositions[skeleton.TrackingId].timeElapsed().TotalSeconds > 60)
+                                {
+                                    if (skeleton.Joints[JointType.ShoulderLeft].TrackingState != JointTrackingState.NotTracked
+                                        & skeleton.Joints[JointType.ShoulderRight].TrackingState != JointTrackingState.NotTracked
+                                        & skeleton.Joints[JointType.Head].TrackingState != JointTrackingState.NotTracked
+                                        & skeleton.Joints[JointType.HandLeft].TrackingState != JointTrackingState.NotTracked
+                                        & skeleton.Joints[JointType.HandRight].TrackingState != JointTrackingState.NotTracked)
+                                    {
+                                        userProfiles[skeleton.TrackingId].userSleeping = skeletonPositions[skeleton.TrackingId].userSleeping(new SkeletonPosition(skeleton, Kinect));
+                                        skeletonPositions[skeleton.TrackingId] = new SkeletonPosition(skeleton, Kinect);
+                                    }
+                                }
+                            }
+
+
 
                             //gender detection
                             int gender = genderDetector.detectThroughKinect(Kinect, colorImageFrame, skeleton);
