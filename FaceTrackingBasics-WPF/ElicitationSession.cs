@@ -27,7 +27,7 @@ namespace FaceTrackingBasics
 
         public ElicitationSession(List<UserProfile> userProfiles, int contentCounter)
         {
-            sessionID = DateTime.Now.ToString();
+            sessionID = DateTime.Now.ToString("ddMMyyyyhhmmss");
             sessionUsers = new List<UserProfile>();
         }
 

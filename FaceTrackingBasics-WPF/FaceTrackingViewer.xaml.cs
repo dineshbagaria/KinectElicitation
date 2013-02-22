@@ -34,18 +34,19 @@ namespace FaceTrackingBasics
         private const uint MaxMissedFrames = 100;
         //Boolean SkeletonChooseingState = false;
 
+        public Dictionary<int, Boolean> childDetected = new Dictionary<int, Boolean>();
         private readonly Dictionary<int, SkeletonFaceTracker> trackedSkeletons = new Dictionary<int, SkeletonFaceTracker>();
 
         public static Dictionary<int, UserProfile> userProfiles = new Dictionary<int, UserProfile>();
         public DateTime startTime = new DateTime();
         public DateTime currentTime = new DateTime();
         public Dictionary<int, Boolean> userTrackStatus = new Dictionary<int, Boolean>();
-        int nameCounter;
+       // int nameCounter;
 
         ChildDetector childDetector = new ChildDetector();
         GenderDetector genderDetector = GenderDetector.getGenderDetector();
 
-        public static Dictionary<int, SkeletonPosition> skeletonPositions = new Dictionary<int, SkeletonPosition>();
+        //public static Dictionary<int, SkeletonPosition> skeletonPositions = new Dictionary<int, SkeletonPosition>();
 
         ResultCreator dynamicRC = new ResultCreator();
         ResultCreator staticRC = new ResultCreator();
@@ -161,17 +162,17 @@ namespace FaceTrackingBasics
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
         {
             sessionEndTime = DateTime.Now;
-            if (sessionEndTime.Subtract(sessionStartTime).TotalSeconds > 20)
+            if (sessionEndTime.Subtract(sessionStartTime).TotalSeconds > 120)
             {
                 //publish data for the session
                 session.startTime = sessionStartTime;
                 session.endTime = sessionEndTime;
                 this.dynamicRC.saveDynamicUserProfiles(session, new List<UserProfile>(userProfiles.Values));
                 this.staticRC.saveStaticUserProfiles(session, new List<UserProfile>(userProfiles.Values));
-                if (contentCounter == 2)
+                if (contentCounter == 3)
                 {
-                    this.dynamicRC.ExportToFile("DynamicData_" + nameCounter + ".csv");
-                    this.staticRC.ExportToFile("StaticData_" + nameCounter++ + ".csv");
+                    this.dynamicRC.ExportToFile("DynamicData_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
+                    this.staticRC.ExportToFile("StaticData_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
                     contentCounter = 0;
                 }
                 //clear old variables
@@ -301,6 +302,11 @@ namespace FaceTrackingBasics
                             rotationOldy.Add(skeleton.TrackingId, 0);
                             headSD.Add(skeleton.TrackingId, 0);
                             headSDDataset.Add(skeleton.TrackingId, new List<float>());
+                           
+                        }
+                        if (!childDetected.ContainsKey(skeleton.TrackingId))
+                        {
+                             childDetected.Add(skeleton.TrackingId, true);
                         }
                     }
                 }
@@ -338,20 +344,20 @@ namespace FaceTrackingBasics
 
                             }
 
-                            //Sleeper Detection
+                            ////Sleeper Detection/*
 
-                            if (!skeletonPositions.ContainsKey(skeleton.TrackingId))
-                            {
-                                skeletonPositions.Add(skeleton.TrackingId, new SkeletonPosition(skeleton, Kinect));
-                            }
-                            else
-                            {
-                                if (skeletonPositions[skeleton.TrackingId].timeElapsed().TotalSeconds > 60)
-                                {
-                                    userProfiles[skeleton.TrackingId].userSleeping = skeletonPositions[skeleton.TrackingId].userSleeping(new SkeletonPosition(skeleton, Kinect));
-                                    skeletonPositions[skeleton.TrackingId] = new SkeletonPosition(skeleton, Kinect);
-                                }
-                            }
+                            //if (!skeletonPositions.ContainsKey(skeleton.TrackingId))
+                            //{
+                            //    skeletonPositions.Add(skeleton.TrackingId, new SkeletonPosition(skeleton, Kinect));
+                            //}
+                            //else
+                            //{
+                            //    if (skeletonPositions[skeleton.TrackingId].timeElapsed().TotalSeconds > 60)
+                            //    {
+                            //        userProfiles[skeleton.TrackingId].userSleeping = skeletonPositions[skeleton.TrackingId].userSleeping(new SkeletonPosition(skeleton, Kinect));
+                            //        skeletonPositions[skeleton.TrackingId] = new SkeletonPosition(skeleton, Kinect);
+                            //    }
+                            //}*/
 
                             //gender detection
                             int gender = genderDetector.detectThroughKinect(Kinect, colorImageFrame, skeleton);
@@ -369,8 +375,19 @@ namespace FaceTrackingBasics
                             userProfiles.TryGetValue(skeleton.TrackingId, out tempUserProfile);
                             tempUserProfile.userIsChild = childDetector.ChildOrNot(skeleton);*/
 
-                            userProfiles[skeleton.TrackingId].userIsChild = childDetector.ChildOrNot(skeleton);
-
+                            if (childDetected[skeleton.TrackingId])
+                            {
+                                userProfiles[skeleton.TrackingId].userIsChild = childDetector.ChildOrNot(skeleton);
+                                if (!userProfiles[skeleton.TrackingId].userIsChild)
+                                {
+                                    childDetected[skeleton.TrackingId] = false;
+                                }
+                            }
+                            else
+	                        {
+                                 userProfiles[skeleton.TrackingId].userIsChild = false;
+	                        }
+                          
 
 
                             // Give each tracker the upated frame.
@@ -398,8 +415,10 @@ namespace FaceTrackingBasics
                                     currentTime = DateTime.Now;
                                     if (currentTime.Subtract(startTime).TotalSeconds > 60)
                                     {
-                                        if (userProfiles.ContainsKey(skeleton.TrackingId) && headSD[skeleton.TrackingId] > 10)
+                                        Debug.WriteLine("Head SD :" + headSD[skeleton.TrackingId]);
+                                        if (userProfiles.ContainsKey(skeleton.TrackingId) && headSD[skeleton.TrackingId] > 5)
                                         {
+
                                             /*userDistractionStatus.Remove(skeleton.TrackingId);
                                             userDistractionStatus.Add(skeleton.TrackingId, true);
                                             UserProfile tempUser = new UserProfile();
