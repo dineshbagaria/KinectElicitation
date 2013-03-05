@@ -41,12 +41,12 @@ namespace FaceTrackingBasics
         public DateTime startTime = new DateTime();
         public DateTime currentTime = new DateTime();
         public Dictionary<int, Boolean> userTrackStatus = new Dictionary<int, Boolean>();
-       // int nameCounter;
+        // int nameCounter;
 
         ChildDetector childDetector = new ChildDetector();
         GenderDetector genderDetector = GenderDetector.getGenderDetector();
 
-        public static Dictionary<int, SkeletonPosition> skeletonPositions = new Dictionary<int, SkeletonPosition>();
+        private static Dictionary<int, SkeletonPosition> skeletonPositions = new Dictionary<int, SkeletonPosition>();
 
         ResultCreator dynamicRC = new ResultCreator();
         ResultCreator staticRC = new ResultCreator();
@@ -68,13 +68,14 @@ namespace FaceTrackingBasics
         DateTime sessionStartTime = DateTime.Now, sessionEndTime = DateTime.Now;
         private ElicitationSession session;
         public int contentCounter;
-
+        double sessionLength = 60;
+        Boolean trackingModeSwitch =false;
         /*public static float totalDistractionx = 0;
         public float rotationOldx = 0;
         public static float totalDistractionz = 0;
         public float rotationOldz = 0;*/
 
-
+        int genderdetectionCount = 0;
 
         public FaceTrackingViewer()
         {
@@ -165,7 +166,7 @@ namespace FaceTrackingBasics
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
         {
             sessionEndTime = DateTime.Now;
-            if (sessionEndTime.Subtract(sessionStartTime).TotalSeconds > 120)
+            if (sessionEndTime.Subtract(sessionStartTime).TotalSeconds > sessionLength)
             {
                 //publish data for the session
                 session.startTime = sessionStartTime;
@@ -190,31 +191,33 @@ namespace FaceTrackingBasics
                 //start new session
                 session = null;
                 sessionStartTime = sessionEndTime;
+                genderdetectionCount = 0;
 
             }
             else
             {
                 //assign current data to the session
                 List<UserProfile> sessionUsers;
+                sessionUsers = new List<UserProfile>();
+
                 if (session == null)
                 {
                     contentCounter++;
-                    sessionUsers = new List<UserProfile>();     //TODO, Remove this line, and add this after  List<UserProfile> sessionUsers;
-                    foreach (var item in userProfiles.Values)
-                    {
-                        sessionUsers.Add(item);
-                    }
-                    session = new ElicitationSession(sessionUsers, contentCounter);
 
+                    //foreach (var item in userProfiles.Values)
+                    //{
+                    //    sessionUsers.Add(item);
+                    //}
+                    //session = new ElicitationSession(sessionUsers, contentCounter);
+                    session = new ElicitationSession();
                 }
-                sessionUsers = new List<UserProfile>();
-                
 
 
-                //TODO ask Dinesh to check this: the user may be added duplicated
+
+
                 foreach (var item in userProfiles.Values)
                 {
-                    sessionUsers.Add(item); 
+                    sessionUsers.Add(item);
                 }
                 session.setUsers(sessionUsers);
             }
@@ -309,11 +312,11 @@ namespace FaceTrackingBasics
                             rotationOldy.Add(skeleton.TrackingId, 0);
                             headSD.Add(skeleton.TrackingId, 0);
                             headSDDataset.Add(skeleton.TrackingId, new List<float>());
-                           
+
                         }
                         if (!childDetected.ContainsKey(skeleton.TrackingId))
                         {
-                             childDetected.Add(skeleton.TrackingId, true);
+                            childDetected.Add(skeleton.TrackingId, true);
                         }
                     }
                 }
@@ -343,7 +346,7 @@ namespace FaceTrackingBasics
                         {
 
                             userTrackStatus[skeleton.TrackingId] = true;
-                            Debug.WriteLine("tracked Skeleton Id:" + skeleton.TrackingId);
+                            //Debug.WriteLine("tracked Skeleton Id:" + skeleton.TrackingId);
                             // We want keep a record of any skeleton, tracked or untracked.
                             if (!this.trackedSkeletons.ContainsKey(skeleton.TrackingId))
                             {
@@ -352,7 +355,7 @@ namespace FaceTrackingBasics
                             }
 
                             ////Sleeper Detection/*
-                
+
 
                             if (!skeletonPositions.ContainsKey(skeleton.TrackingId))
                             {
@@ -365,7 +368,7 @@ namespace FaceTrackingBasics
                             }
                             else
                             {
-                                if (skeletonPositions[skeleton.TrackingId].timeElapsed().TotalSeconds > 60)
+                                if (skeletonPositions[skeleton.TrackingId].timeElapsed().TotalSeconds > sessionLength / 2)
                                 {
                                     if (skeleton.Joints[JointType.ShoulderLeft].TrackingState != JointTrackingState.NotTracked
                                         & skeleton.Joints[JointType.ShoulderRight].TrackingState != JointTrackingState.NotTracked
@@ -382,15 +385,19 @@ namespace FaceTrackingBasics
 
 
                             //gender detection
-                            int gender = genderDetector.detectThroughKinect(Kinect, colorImageFrame, skeleton);
-                            UserProfile user = userProfiles[skeleton.TrackingId];
-                            if (gender == 0)
-                                user.gender = "Male";
-                            else if (gender == 1)
-                                user.gender = "Female";
-                            else
-                                user.gender = "Unknown";
+                            if (DateTime.Now.Subtract(sessionStartTime).TotalSeconds >= sessionLength / 5 * genderdetectionCount && genderdetectionCount < 5)
+                            {
+                                genderdetectionCount++;
 
+                                int gender = genderDetector.detectThroughKinect(Kinect, colorImageFrame, skeleton);
+                                UserProfile user = userProfiles[skeleton.TrackingId];
+                                if (gender == 0)
+                                    user.gender = "Male";
+                                else if (gender == 1)
+                                    user.gender = "Female";
+                                else
+                                    user.gender = "Unknown";
+                            }
                             //child detection
 
                             /*UserProfile tempUserProfile = new UserProfile();
@@ -406,10 +413,10 @@ namespace FaceTrackingBasics
                                 }
                             }
                             else
-	                        {
-                                 userProfiles[skeleton.TrackingId].userIsChild = false;
-	                        }
-                          
+                            {
+                                userProfiles[skeleton.TrackingId].userIsChild = false;
+                            }
+
 
 
                             // Give each tracker the upated frame.
@@ -435,9 +442,9 @@ namespace FaceTrackingBasics
 
                                     }
                                     currentTime = DateTime.Now;
-                                    if (currentTime.Subtract(startTime).TotalSeconds > 60)
+                                    if (currentTime.Subtract(startTime).TotalSeconds > sessionLength / 2)
                                     {
-                                        Debug.WriteLine("Head SD :" + headSD[skeleton.TrackingId]);
+                                        //Debug.WriteLine("Head SD :" + headSD[skeleton.TrackingId]);
                                         if (userProfiles.ContainsKey(skeleton.TrackingId) && headSD[skeleton.TrackingId] > 5)
                                         {
 
@@ -532,6 +539,17 @@ namespace FaceTrackingBasics
                     userTrackStatus[tempUserID] = true;
 
                 }
+               /* if (trackingModeSwitch)
+                {
+                    this.Kinect.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
+                    trackingModeSwitch = false;
+                }
+                else
+                {
+                    this.Kinect.SkeletonStream.TrackingMode = SkeletonTrackingMode.Default;
+                    trackingModeSwitch = true;
+                }*/
+                
             }
         }
 
@@ -672,7 +690,7 @@ namespace FaceTrackingBasics
                         // During some shutdown scenarios the FaceTracker
                         // is unable to be instantiated.  Catch that exception
                         // and don't track a face.
-                        Debug.WriteLine("AllFramesReady - creating a new FaceTracker threw an InvalidOperationException");
+                        //Debug.WriteLine("AllFramesReady - creating a new FaceTracker threw an InvalidOperationException");
                         this.faceTracker = null;
                     }
                 }
@@ -696,7 +714,7 @@ namespace FaceTrackingBasics
                         }
                         rotationNew = frame.Rotation.Y;
                         faceTracked = true;
-                        Debug.WriteLine(frame.Rotation.Y);
+                        //Debug.WriteLine(frame.Rotation.Y);
 
                         this.facePoints = frame.GetProjected3DShape();
                     }
