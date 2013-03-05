@@ -16,12 +16,12 @@ namespace FaceTrackingBasics
         public ElicitationSession(Content show) 
         {
             this.content = show;
-            sessionID = DateTime.Today.ToLongDateString();
+            sessionID = DateTime.Now.ToString("ddMMyyyyhhmmss");
             sessionUsers = new List<UserProfile>();
         }
         public ElicitationSession()
         {
-            sessionID = DateTime.Today.ToLongDateString();
+            sessionID = DateTime.Now.ToString("ddMMyyyyhhmmss");
             sessionUsers = new List<UserProfile>();
         }
 
