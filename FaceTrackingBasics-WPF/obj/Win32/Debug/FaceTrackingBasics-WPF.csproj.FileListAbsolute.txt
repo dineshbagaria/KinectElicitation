@@ -47,3 +47,6 @@ C:\Users\Dinesh\Desktop\KinectExamples\online\FaceTrackingBasics-WPF\obj\Win32\D
 C:\Users\Dinesh\Desktop\KinectExamples\online\FaceTrackingBasics-WPF\obj\Win32\Debug\FaceTrackingBasics-WPF.g.resources
 C:\Users\Dinesh\Desktop\KinectExamples\online\FaceTrackingBasics-WPF\obj\Win32\Debug\FaceTrackingBasics.Properties.Resources.resources
 C:\Users\Dinesh\Desktop\KinectExamples\online\FaceTrackingBasics-WPF\obj\Win32\Debug\FaceTrackingBasics-WPF.csproj.GenerateResource.Cache
+C:\Users\Teresa\Documents\GitHub\KinectElicitation\FaceTrackingBasics-WPF\bin\x86\Debug\FaceTrackingBasics-WPF.exe.config
+C:\Users\Teresa\Documents\GitHub\KinectElicitation\FaceTrackingBasics-WPF\obj\Win32\Debug\FaceTrackingBasics-WPF.exe
+C:\Users\Teresa\Documents\GitHub\KinectElicitation\FaceTrackingBasics-WPF\obj\Win32\Debug\FaceTrackingBasics-WPF.pdb
