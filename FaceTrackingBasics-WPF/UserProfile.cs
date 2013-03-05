@@ -8,7 +8,28 @@ namespace FaceTrackingBasics
 
     public class UserProfile
     {
-        public String gender { set; get; }
+        private int _genderVote = 0;
+
+        public String gender
+        {
+            set
+            {
+                if (string.Equals(value, "Male", StringComparison.OrdinalIgnoreCase))
+                    this._genderVote = this._genderVote + 1;
+                else if (string.Equals(value, "Female",  StringComparison.OrdinalIgnoreCase))
+                    this._genderVote = this._genderVote - 1;
+            }
+
+            get
+            {
+                if (this._genderVote == 0)
+                    return "Unknown";
+                else if (this._genderVote > 0)
+                    return "Male";
+                else
+                    return "Female";
+            }
+        }
 
         public Boolean userIsChild { set; get; }
 
@@ -24,7 +45,6 @@ namespace FaceTrackingBasics
             this.userIsChild = userIsChild;
             this.userSleeping = userSleeping;
             this.userDistracted = userDistracted;
-
         }
         public UserProfile()
         { }

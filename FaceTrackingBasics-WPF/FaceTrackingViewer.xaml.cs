@@ -159,6 +159,9 @@ namespace FaceTrackingBasics
 
             return Math.Pow(squaredMean / data.Count, 0.5);
         }
+
+
+
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
         {
             sessionEndTime = DateTime.Now;
@@ -196,7 +199,7 @@ namespace FaceTrackingBasics
                 if (session == null)
                 {
                     contentCounter++;
-                    sessionUsers = new List<UserProfile>();
+                    sessionUsers = new List<UserProfile>();     //TODO, Remove this line, and add this after  List<UserProfile> sessionUsers;
                     foreach (var item in userProfiles.Values)
                     {
                         sessionUsers.Add(item);
@@ -205,9 +208,13 @@ namespace FaceTrackingBasics
 
                 }
                 sessionUsers = new List<UserProfile>();
+                
+
+
+                //TODO ask Dinesh to check this: the user may be added duplicated
                 foreach (var item in userProfiles.Values)
                 {
-                    sessionUsers.Add(item);
+                    sessionUsers.Add(item); 
                 }
                 session.setUsers(sessionUsers);
             }
