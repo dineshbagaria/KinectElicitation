@@ -448,9 +448,9 @@
       <Project>{b2c15b1d-bf04-4cbc-af22-0ecf38591b09}</Project>
       <Name>FaceDetection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FaceTrackingBasics-WPF\FaceTrackingBasics-WPF.csproj">
+    <ProjectReference Include="..\FaceTrackingBasics-WPF\Impeli.csproj">
       <Project>{8fb2dea6-9900-4fc5-87e4-b54188f62884}</Project>
-      <Name>FaceTrackingBasics-WPF</Name>
+      <Name>Impeli</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
