@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaceTrackingBasics-WPF", "FaceTrackingBasics-WPF.csproj", "{8FB2DEA6-9900-4FC5-87E4-B54188F62884}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Impeli", "Impeli.csproj", "{8FB2DEA6-9900-4FC5-87E4-B54188F62884}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Kinect.Toolkit", "..\Microsoft.Kinect.Toolkit\Microsoft.Kinect.Toolkit.csproj", "{C6F9C31B-6130-4443-A5CC-EF0664552ECD}"
 EndProject

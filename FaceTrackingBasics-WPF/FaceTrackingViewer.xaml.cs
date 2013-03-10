@@ -1,10 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FaceTrackingViewer.xaml.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace FaceTrackingBasics
+﻿
+namespace Impeli
 {
     using System;
     using System.Collections.Generic;

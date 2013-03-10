@@ -1,8 +1,8 @@
 ﻿<Window 
-        x:Class="FaceTrackingBasics.MainWindow"
+        x:Class="Impeli.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:FaceTrackingBasics"
+        xmlns:local="clr-namespace:Impeli"
         Title="Face Tracking Basics"
         Closed="WindowClosed"
         Height="735" Width="770" 

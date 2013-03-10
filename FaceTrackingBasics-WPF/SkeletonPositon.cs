@@ -9,7 +9,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using System;
-namespace FaceTrackingBasics
+namespace Impeli
 {
     class SkeletonPosition
     {

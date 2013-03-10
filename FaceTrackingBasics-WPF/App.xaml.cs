@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace FaceTrackingBasics
+namespace Impeli
 {
     using System.Windows;
 

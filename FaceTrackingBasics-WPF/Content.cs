@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FaceTrackingBasics
+namespace Impeli
 {
     public enum ContentType { Movie, TVShow, Others }
     enum Genre {Action, Comedy,  Others }

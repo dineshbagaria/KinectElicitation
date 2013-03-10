@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Data.SqlTypes;
 
-namespace FaceTrackingBasics
+namespace Impeli
 {
     public class CsvExport
     {

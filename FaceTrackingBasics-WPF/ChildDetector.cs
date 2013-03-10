@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Kinect;
 
-namespace FaceTrackingBasics
+namespace Impeli
 {
     class ChildDetector
     {
