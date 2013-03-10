@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
+  <title>OSChina代码查看：OpenCV-2.2.0/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml - 开源中国 OSChina.NET</title>
+      <link rel="stylesheet" href="/css/channel.css?date=20130109" type="text/css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="/js/2011/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+  <script type="text/javascript" src="/js/2012/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="/js/2012/jquery.form.js"></script>
+  <script type="text/javascript" src="/js/2011/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+    <script type="text/javascript">
+  	g_user = {
+	id:0,
+	name:'',
+	login:false,
+	bportrait:'<img src="/img/portrait.gif" align="absmiddle" alt="非会员用户" title="非会员用户" class="SmallPortrait" user=""/>'
+};
+
+  </script>
+  
+    <script type="text/javascript" src="/js/2011/oschina.js?ver=20121007"></script>
+  <script type="text/javascript" src="/js/utils.js"></script>
+  <script type="text/javascript" src="/js/channel.js"></script>
+  </head>
+<body>
+<div id="OSC_Screen">
+	<div id='OSC_NavTop'>
+        <div id="OSC_Channels">
+        	<ul>
+        	<li class="item"><a href="http://www.oschina.net/" class='home'>首页</a></li>        	<li class="item"><a href="http://www.oschina.net/project" class='project'>开源软件</a></li>
+        	<li class="item control_select">
+				<a href="http://www.oschina.net/question" class='question'>讨论区</a>				
+				<ul class="cs_content">					
+                	<li><a href="http://www.oschina.net/question?catalog=1"> 技术问答 &raquo; </a></li>
+                	<li><a href="http://www.oschina.net/question?catalog=2"> 技术分享 &raquo; </a></li>
+                	<li><a href="http://www.oschina.net/question?catalog=3"> IT大杂烩 &raquo; </a></li>
+                	<li><a href="http://www.oschina.net/question?catalog=100"> 职业生涯 &raquo; </a></li>
+                	<li><a href="http://www.oschina.net/question?catalog=4"> 站务/建议 &raquo; </a></li>
+				</ul>
+			</li>
+        	<li class="item"><a href="http://www.oschina.net/code/list" class='code hl'>代码分享</a></li>
+        	        	<li class="item"><a href="http://www.oschina.net/blog" class='blog'>博客</a></li>
+        	<li class="item"><a href="http://www.oschina.net/translate" class='tran'>翻译</a></li>
+            <li class="item"><a href="http://www.oschina.net/news" class='news'>资讯</a></li>
+        	<li class="item control_select">
+				<a href="http://www.oschina.net/android" class='mobile'>移动开发</a>
+				<ul class="cs_content cs_mobile">
+                	<li class="android_"><a href="http://www.oschina.net/android">Android开发专区</a></li>
+                	<li class="ios_"><a href="http://www.oschina.net/ios/home">iOS开发专区</a></li>
+                	<li class="ios_"><a href="http://www.oschina.net/ios/codingList">iOS代码库</a></li>
+                	<li class="wp7_"><a href="http://www.oschina.net/wp7">WP7开发专区</a></li>
+				</ul>
+			</li>
+        	<li class="item t_job"><a href="http://www.oschina.net/job" class='job'>招聘</a><div class="job_hot"></div></li>
+        	</ul>
+        </div>
+		<div id="OSC_Userbar">
+                		    		当前访客身份：游客 [ <a href="http://www.oschina.net/home/login?goto_page=http%3A%2F%2Fwww.oschina.net%2Fcode%2Fexplore%2FOpenCV-2.2.0%2Fdata%2Fhaarcascades%2Fhaarcascade_eye_tree_eyeglasses.xml">登录</a> | <a href="http://www.oschina.net/home/reg">加入开源中国</a> ]
+    				</div>
+	</div>
+	<div id='OSC_Banner'><a href='http://www.oschina.net/' class='Logo' title='OSChina 开源中国'>开源中国</a>
+<h1><a href='/code/explore'>源码库</a></h1>
+<dl>
+	<dt>共收录了 <em>391</em> 个项目源码</dt>
+	<dt><strong>热门：</strong>
+    	<a href="/code/explore/android-2.2-froyo">Android源码</a>
+    	<a href="/code/explore/linux-2.6.36">Linux内核源码</a>
+    	<a href="/code/explore/jdk16">JDK源码</a>
+	</dt>
+</dl>
+<form action='http://www.oschina.net/search' class='search'>
+	<input type='hidden' name='scope' value='project'/>
+	<input id='channel_q' type='text' name='q' value='' placeholder='资讯、软件、分享、代码、博客' class='TXT'/>
+	<input type='submit' value='搜 索' class='BTN'/>
+</form>
+</div>	<div id="OSC_Content" class='CenterDiv'>
+
+
+
+<style>#CodeList {border:1px solid #ddd;padding:20px;background:#fff;}
+#FileDesc {color:#666;margin:0 0 5px 5px;}
+
+#FileHeader {
+	padding:5px 2px;
+	font-size:16pt;
+}
+#FileHeader a {text-decoration:none;}
+#FilePath {
+	font-size:9pt;
+	margin:5px 0 15px 0;
+	color:#666;
+}
+#FilePath a {text-decoration:none;}
+#FileHeader span {font-weight:normal;font-size:10pt;margin-left:20px;}
+#FileTree {
+	background:#efe;
+	border:1px solid #40AA53;
+	width:200px;
+	overflow:hidden;
+	vertical-align:top;
+}
+#FileTree strong {
+	display:block;
+	background:#40AA53;
+	color:#fff;
+	padding:3px 5px;
+}
+#FileTree strong a {float:right;color:#fff;}
+#FileTree ul {
+	font-family:Courier New,Arial;
+	font-size:9pt;
+	margin:10px 0 10px 10px;
+	line-height:18px;
+}
+#FileTree ul li a {text-decoration:none;}
+#FileTree ul li.dir a {font-weight:bold;color:#00F;}
+#FileViewer {padding-left:10px;}
+
+#AlphabetIndex {margin:0 0 20px 0;overflow:hidden;font-size:10pt;}
+#AlphabetIndex span {
+	width:24px;
+	float:left;
+	text-align:center;
+	margin:5px 0 0 5px;
+	font-family:Courier New,Arial;
+}
+#AlphabetIndex span a {
+	text-decoration:none;
+	display:block;
+	background:#eee;
+	border:1px solid #ccc;
+}
+#AlphabetIndex span a:hover{
+	background:#ccc;
+	color:#fff;
+}
+.SourcesOfAlpha {line-height:22px;margin:0 0 20px 5px;}
+.SourcesOfAlpha strong a {color:#A00;font-size:10.5pt;}
+.SourcesOfAlpha ul {margin-left:5px;overflow:hidden;}
+.SourcesOfAlpha ul li {float:left; width:230px;}</style>
+
+<div id='CodeList' class='Channel'>
+<h1 id="FileHeader"><a href='/p/opencv'>OpenCV</a> &raquo; haarcascade_eye_tree_eyeglasses.xml</h1>
+<p id="FilePath">路径：<a href='/code/explore/OpenCV-2.2.0'>OpenCV-2.2.0</a>/<a href='/code/explore/OpenCV-2.2.0/data'>data</a>/<a href='/code/explore/OpenCV-2.2.0/data/haarcascades'>haarcascades</a>/<a href='/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml'>haarcascade_eye_tree_eyeglasses.xml</a></p>
+<table width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed;'>
+<tr>
+	<td id="FileTree" valign='top'>	<strong>
+		<a href="/code/explore/OpenCV-2.2.0/data/haarcascades">上一级</a>
+		目 录
+	</strong>
+	<ul>
+					<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_eye.xml" title="haarcascade_eye.xml">
+						haarcascade_eye.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml" title="haarcascade_eye_tree_eyeglasses.xml">
+						haarcascade_eye_tree_eyeglasses.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_frontalface_alt.xml" title="haarcascade_frontalface_alt.xml">
+						haarcascade_frontalface_alt.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_frontalface_alt2.xml" title="haarcascade_frontalface_alt2.xml">
+						haarcascade_frontalface_alt2.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_frontalface_alt_tree.xml" title="haarcascade_frontalface_alt_tree.xml">
+						haarcascade_frontalface_alt_tree.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_frontalface_default.xml" title="haarcascade_frontalface_default.xml">
+						haarcascade_frontalface_default.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_fullbody.xml" title="haarcascade_fullbody.xml">
+						haarcascade_fullbody.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_lefteye_2splits.xml" title="haarcascade_lefteye_2splits.xml">
+						haarcascade_lefteye_2splits.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_lowerbody.xml" title="haarcascade_lowerbody.xml">
+						haarcascade_lowerbody.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_mcs_eyepair_big.xml" title="haarcascade_mcs_eyepair_big.xml">
+						haarcascade_mcs_eyepair_big.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_mcs_eyepair_small.xml" title="haarcascade_mcs_eyepair_small.xml">
+						haarcascade_mcs_eyepair_small.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_mcs_lefteye.xml" title="haarcascade_mcs_lefteye.xml">
+						haarcascade_mcs_lefteye.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_mcs_mouth.xml" title="haarcascade_mcs_mouth.xml">
+						haarcascade_mcs_mouth.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_mcs_nose.xml" title="haarcascade_mcs_nose.xml">
+						haarcascade_mcs_nose.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_mcs_righteye.xml" title="haarcascade_mcs_righteye.xml">
+						haarcascade_mcs_righteye.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_mcs_upperbody.xml" title="haarcascade_mcs_upperbody.xml">
+						haarcascade_mcs_upperbody.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_profileface.xml" title="haarcascade_profileface.xml">
+						haarcascade_profileface.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_righteye_2splits.xml" title="haarcascade_righteye_2splits.xml">
+						haarcascade_righteye_2splits.xml
+						</a>
+		</li>
+			<li>
+			<a href="/code/explore/OpenCV-2.2.0/data/haarcascades/haarcascade_upperbody.xml" title="haarcascade_upperbody.xml">
+						haarcascade_upperbody.xml
+						</a>
+		</li>
+		</ul>
+	</td>
+	<td id="FileViewer" valign='top'>    <div class='google_ads'>
+		<script type="text/javascript" src="/js/ad/tag.js"></script>
+    </div>
+		<a href="/code/download_src?file=OpenCV-2.2.0%2Fdata%2Fhaarcascades%2Fhaarcascade_eye_tree_eyeglasses.xml" target="_blank">下载 haarcascade_eye_tree_eyeglasses.xml</a>	
+		文件超过64k，不予显示
+			</td>
+</tr>
+</table>
+</div>
+<script type="text/javascript" src="/js/syntax-highlighter-2.1.382/scripts/brush.js"></script>
+<link type="text/css" rel="stylesheet" href="/js/syntax-highlighter-2.1.382/styles/shCore.css"/>
+<link type="text/css" rel="stylesheet" href="/js/syntax-highlighter-2.1.382/styles/shThemeDefault.css"/>
+<script type='text/javascript'><!--
+$(document).ready(function(){
+	SyntaxHighlighter.config.clipboardSwf = '/js/syntax-highlighter-2.1.382/scripts/clipboard.swf';
+	SyntaxHighlighter.all();
+});
+//-->
+</script>
+</div>
+	<div id="OSC_Footer" class='CenterDiv'><style>
+.oscapp {text-align:left; width:220px;}
+.oscapp span {float:left;width:140px;}
+.oscapp a {float:left;text-indent:-9999em;width:16px;margin-left:8px;}
+.oscapp a.android {background:url('/img/android.gif') no-repeat left center;}
+.oscapp a.iphone {background:url('/img/iphone.gif') no-repeat left center;}
+.oscapp a.wp7 {background:url('/img/wp7.gif') no-repeat left center;}
+</style>
+<table width='100%'><tr>
+<td align='left'>&copy; 开源中国(OsChina.NET) | <a href="http://www.oschina.net/home/about">关于我们</a> | <a href="mailto:oschina.net@gmail.com">广告联系</a> | <a href="http://weibo.com/oschina2010" target="_blank">@新浪微博</a> | <a href="http://m.oschina.net/">开源中国手机版</a> | <a href='http://www.miitbeian.gov.cn/' target='_blank' style='color:#737573;text-decoration:none;'>粤ICP备12009483号-3</a></td>
+<td class='oscapp'>
+	<span>开源中国手机客户端：</span>
+	<a href="http://www.oschina.net/app" class='android' title='Android客户端'>Android</a>
+	<a href="http://www.oschina.net/app" class='iphone' title='iPhone 客户端'>iPhone</a>
+	<a href="http://www.oschina.net/app" class='wp7' title='Windows Phone 客户端'>WP7</a>
+</td>
+</tr>
+</table>
+<script type='text/javascript'>
+<!--
+if (top.location != self.location)top.location=self.location;
+//-->
+</script></div>
+</div>
+</body>
+</html>
+<!-- Generated by OsChina.NET (init:0[ms],page:96[ms],ip:2.235.115.52) -->

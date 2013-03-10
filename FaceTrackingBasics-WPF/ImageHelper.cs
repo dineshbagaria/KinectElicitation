@@ -17,71 +17,22 @@ using System.Drawing;
 
 
 using Microsoft.Kinect;
+using FaceDetection;
 
 namespace Kinect.Tool
 {
     class ImageHelper
     {
 
-
         public static Image<Gray, Byte> cropImage(KinectSensor sensor, ColorImageFrame colorFrame, Skeleton skeleton)
         {
-            // step compute the rect for cropping
+            Image<Bgr, byte> tarImage = null;
 
             Joint head = skeleton.Joints[JointType.Head];
-            if (head.TrackingState != JointTrackingState.Tracked) return null;
+            if (head.TrackingState == JointTrackingState.NotTracked) return null;
 
-            CoordinateMapper mapper = sensor.CoordinateMapper;
-            ColorImagePoint headPoint = mapper.MapSkeletonPointToColorPoint(head.Position, colorFrame.Format);
-            ColorImagePoint centerPoint = mapper.MapSkeletonPointToColorPoint(skeleton.Position, colorFrame.Format);
-
-            if (centerPoint.Y - headPoint.Y <= 0) return null;
-
-            int topY = 0;
-            int bottomY = centerPoint.Y;
+            ColorImagePoint headPoint = sensor.CoordinateMapper.MapSkeletonPointToColorPoint(head.Position, colorFrame.Format);
            
-            int leftX = 0;
-            int rightX = colorFrame.Width;
-
-            int dist = centerPoint.Y - headPoint.Y;
-
-            if (headPoint.Y - dist / 3 > 0)
-            {
-                topY = headPoint.Y - dist / 3;
-            }
-
-            if (centerPoint.X - dist / 2 > 0)
-            {
-                leftX = centerPoint.X - dist / 2;
-            }
-
-            if (centerPoint.X + dist / 2 < colorFrame.Width)
-            {
-                rightX = centerPoint.X + dist / 2;
-            }
-
-
-
-            //ColorImagePoint shoulderCenter = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.ShoulderCenter].Position, colorFrame.Format);
-            //ColorImagePoint shoulderLeft = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.ShoulderLeft].Position, colorFrame.Format);
-            //ColorImagePoint shoulderRight = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.ShoulderRight].Position, colorFrame.Format);
-            //int topY = 0;
-            //int bottomY = shoulderCenter.Y;
-
-            //int leftX = shoulderLeft.X;
-            //int rightX = shoulderRight.X;
-
-            //if (headPoint.Y - (shoulderCenter.Y - headPoint.Y) > 0)
-            //{
-            //    topY = headPoint.Y - (shoulderCenter.Y - headPoint.Y);
-            //}
-
-            //if (bottomY - topY + 1 < 225)
-            //{
-            //    bottomY = bottomY + (255 - (bottomY - topY + 1));
-            //}
-
-
             byte[] pixelData = new byte[colorFrame.PixelDataLength];
             colorFrame.CopyPixelDataTo(pixelData);
             Bitmap bitmap = null;
@@ -91,24 +42,38 @@ namespace Kinect.Tool
                 Int32Rect rect = new Int32Rect(0, 0, colorFrame.Width, colorFrame.Height);
                 int stride = colorFrame.Width * colorFrame.BytesPerPixel;
                 wBitmap.WritePixels(rect, pixelData, stride, 0);
+                bitmap = bitmapSourceToBitmap(wBitmap);
 
-                CroppedBitmap cb = new CroppedBitmap(wBitmap, new Int32Rect(leftX, topY, rightX - leftX, bottomY - topY));       //select region rect
+                long detectionTime;
+                List<Rectangle> faces = new List<Rectangle>();
+                List<Rectangle> eyes = new List<Rectangle>();
 
-                //CroppedBitmap cb = new CroppedBitmap(wBitmap, new Int32Rect(0, 0, 10, 10));  
-                bitmap = bitmapSourceToBitmap(cb);
+                Image<Bgr, byte> image = new Image<Bgr, byte>(bitmap);
+                DetectFace.Detect(image, "haarcascade_frontalface_alt2.xml", "haarcascade_eye.xml", faces, eyes, out detectionTime);
+                
+                foreach( var face in faces )
+                {
+                    if (face.X < headPoint.X && face.X + face.Width > headPoint.X && face.Y < headPoint.Y && face.Y + face.Height > headPoint.Y)
+                    {
+                        image.ROI = face;
+                        tarImage = image.Copy();
+                        tarImage = tarImage.Resize(200, 200, Emgu.CV.CvEnum.INTER.CV_INTER_CUBIC);
+                        break;
+                    }
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
 
-            if (bitmap == null) return null;
-           
-            return new Image<Rgb, byte>(bitmap).Convert<Gray, Byte>();
+            if (tarImage == null) return null;
+
+            return tarImage.Convert<Gray, Byte>();
         }
 
-     
-        
+
+
         private static Bitmap bitmapSourceToBitmap(BitmapSource source)
         {
             Bitmap bmp = new Bitmap(source.PixelWidth, source.PixelHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
@@ -117,6 +82,99 @@ namespace Kinect.Tool
             bmp.UnlockBits(data);
             return bmp;
         }
+
+
+
+
+        //public static Image<Gray, Byte> cropImage(KinectSensor sensor, ColorImageFrame colorFrame, Skeleton skeleton)
+        //{
+        //    // step compute the rect for cropping
+
+        //    Joint head = skeleton.Joints[JointType.Head];
+        //    if (head.TrackingState != JointTrackingState.Tracked) return null;
+
+        //    CoordinateMapper mapper = sensor.CoordinateMapper;
+        //    ColorImagePoint headPoint = mapper.MapSkeletonPointToColorPoint(head.Position, colorFrame.Format);
+        //    ColorImagePoint centerPoint = mapper.MapSkeletonPointToColorPoint(skeleton.Position, colorFrame.Format);
+           
+
+        //    if (centerPoint.Y - headPoint.Y <= 0) return null;
+
+        //    int topY = 0;
+        //    int bottomY = centerPoint.Y;
+           
+        //    int leftX = 0;
+        //    int rightX = colorFrame.Width;
+
+        //    int dist = centerPoint.Y - headPoint.Y;
+
+        //    if (headPoint.Y - dist / 3 > 0)
+        //    {
+        //        topY = headPoint.Y - dist / 3;
+        //    }
+
+        //    if (centerPoint.X - dist / 2 > 0)
+        //    {
+        //        leftX = centerPoint.X - dist / 2;
+        //    }
+
+        //    if (centerPoint.X + dist / 2 < colorFrame.Width)
+        //    {
+        //        rightX = centerPoint.X + dist / 2;
+        //    }
+
+
+        //    topY = 0;
+        //    bottomY = 480;
+
+        //    leftX = 0;
+        //    rightX = 640;
+
+
+        //    //ColorImagePoint shoulderCenter = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.ShoulderCenter].Position, colorFrame.Format);
+        //    //ColorImagePoint shoulderLeft = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.ShoulderLeft].Position, colorFrame.Format);
+        //    //ColorImagePoint shoulderRight = mapper.MapSkeletonPointToColorPoint(skeleton.Joints[JointType.ShoulderRight].Position, colorFrame.Format);
+        //    //int topY = 0;
+        //    //int bottomY = shoulderCenter.Y;
+
+        //    //int leftX = shoulderLeft.X;
+        //    //int rightX = shoulderRight.X;
+
+        //    //if (headPoint.Y - (shoulderCenter.Y - headPoint.Y) > 0)
+        //    //{
+        //    //    topY = headPoint.Y - (shoulderCenter.Y - headPoint.Y);
+        //    //}
+
+        //    //if (bottomY - topY + 1 < 225)
+        //    //{
+        //    //    bottomY = bottomY + (255 - (bottomY - topY + 1));
+        //    //}
+
+
+        //    byte[] pixelData = new byte[colorFrame.PixelDataLength];
+        //    colorFrame.CopyPixelDataTo(pixelData);
+        //    Bitmap bitmap = null;
+        //    try
+        //    {
+        //        WriteableBitmap wBitmap = new WriteableBitmap(colorFrame.Width, colorFrame.Height, 96, 96, PixelFormats.Bgr32, null);
+        //        Int32Rect rect = new Int32Rect(0, 0, colorFrame.Width, colorFrame.Height);
+        //        int stride = colorFrame.Width * colorFrame.BytesPerPixel;
+        //        wBitmap.WritePixels(rect, pixelData, stride, 0);
+
+        //        CroppedBitmap cb = new CroppedBitmap(wBitmap, new Int32Rect(leftX, topY, rightX - leftX, bottomY - topY));       //select region rect
+
+        //        //CroppedBitmap cb = new CroppedBitmap(wBitmap, new Int32Rect(0, 0, 10, 10));  
+        //        bitmap = bitmapSourceToBitmap(cb);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e.Message);
+        //    }
+
+        //    if (bitmap == null) return null;
+           
+        //    return new Image<Rgb, byte>(bitmap).Convert<Gray, Byte>();
+        //}
 
         
     

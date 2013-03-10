@@ -68,7 +68,7 @@ namespace FaceTrackingBasics
         DateTime sessionStartTime = DateTime.Now, sessionEndTime = DateTime.Now;
         private ElicitationSession session;
         public int contentCounter;
-        double sessionLength = 60;
+        double sessionLength = 120;
         Boolean trackingModeSwitch =false;
         /*public static float totalDistractionx = 0;
         public float rotationOldx = 0;
@@ -177,6 +177,8 @@ namespace FaceTrackingBasics
                 {
                     this.dynamicRC.ExportToFile("DynamicData_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
                     this.staticRC.ExportToFile("StaticData_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
+                    dynamicRC = new ResultCreator();
+                    staticRC = new ResultCreator();
                     contentCounter = 0;
                 }
                 //clear old variables
