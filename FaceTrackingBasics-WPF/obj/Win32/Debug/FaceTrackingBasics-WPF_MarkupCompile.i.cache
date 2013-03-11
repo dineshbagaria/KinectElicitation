@@ -5,7 +5,7 @@ winexe
 C#
 .cs
 C:\Users\Teresa\Documents\GitHub\KinectElicitation\FaceTrackingBasics-WPF\obj\Win32\Debug\
-FaceTrackingBasics
+Impeli
 none
 false
 DEBUG;TRACE
@@ -16,5 +16,5 @@ C:\Users\Teresa\Documents\GitHub\KinectElicitation\FaceTrackingBasics-WPF\App.xa
 262046030867
 FaceTrackingViewer.xaml;MainWindow.xaml;
 
-True
+False
 

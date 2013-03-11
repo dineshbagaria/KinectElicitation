@@ -1,0 +1,3 @@
+SessionID,Start Time,End Time,User ID,Is User Sleeping,Is User Distracted,
+10032013084509,2013-03-10 08:45:01,2013-03-10 08:47:01,7,False,False,
+10032013084901,2013-03-10 08:49:01,2013-03-10 08:51:01,11,False,False,
