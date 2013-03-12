@@ -26,3 +26,10 @@ C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.Face
 C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Debug\Microsoft.Kinect.Toolkit.FaceTracking.dll
 C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Debug\Microsoft.Kinect.Toolkit.FaceTracking.pdb
 C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Debug\Microsoft.Kinect.Toolkit.FaceTracking.csprojResolveAssemblyReference.cache
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Debug\FaceTrackData.dll
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Debug\FaceTrackLib.dll
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Debug\Microsoft.Kinect.Toolkit.FaceTracking.dll
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Debug\Microsoft.Kinect.Toolkit.FaceTracking.pdb
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Debug\Microsoft.Kinect.Toolkit.FaceTracking.csprojResolveAssemblyReference.cache
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Debug\Microsoft.Kinect.Toolkit.FaceTracking.dll
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Debug\Microsoft.Kinect.Toolkit.FaceTracking.pdb
