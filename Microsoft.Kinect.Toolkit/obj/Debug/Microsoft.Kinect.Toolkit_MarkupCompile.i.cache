@@ -4,15 +4,15 @@
 library
 C#
 .cs
-C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\
+C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\
 Microsoft.Kinect.Toolkit
 none
 false
-DEBUG;TRACE
+CODE_ANALYSIS;DEBUG;TRACE
 
 1-1341555513
 
-1215812328
+12-617499964
 9-2090293299
 KinectSensorChooserUI.xaml;
 
