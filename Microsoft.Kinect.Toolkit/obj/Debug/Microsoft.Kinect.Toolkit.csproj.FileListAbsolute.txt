@@ -47,3 +47,14 @@ C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\
 C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.dll
 C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.pdb
 C:\Users\Teresa\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.csprojResolveAssemblyReference.cache
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\bin\Debug\Microsoft.Kinect.Toolkit.dll
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\bin\Debug\Microsoft.Kinect.Toolkit.pdb
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.csprojResolveAssemblyReference.cache
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\KinectSensorChooserUI.baml
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\KinectSensorChooserUI.g.cs
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit_MarkupCompile.cache
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.g.resources
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.Properties.Resources.resources
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.csproj.GenerateResource.Cache
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.dll
+C:\Users\Dinesh\Documents\GitHub\KinectElicitation\Microsoft.Kinect.Toolkit\obj\Debug\Microsoft.Kinect.Toolkit.pdb
